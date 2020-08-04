@@ -4,13 +4,20 @@ const colors = require("colors");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
 
+// Parse config file
 dotenv.config({ path: "./config/config.env" });
 
+//  connect mongo
 connectDB();
 
+// Adds routes
 const transactions = require("./routes/transactions");
 
+// Starts app
 const app = express();
+
+// Middleware for body parse
+app.use(express.json());
 
 app.use("/api/v1/transactions", transactions);
 
