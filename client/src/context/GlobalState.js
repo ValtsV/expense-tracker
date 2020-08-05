@@ -31,18 +31,41 @@ export const GlobalProvider = ({ children }) => {
     }
   }
 
-  function deleteTransaction(id) {
-    dispatch({
-      type: "DELETE_TRANSACTION",
-      payload: id,
-    });
+  async function deleteTransaction(id) {
+    try {
+      await axios.delete(`/api/v1/transactions/${id}`);
+
+      dispatch({
+        type: "DELETE_TRANSACTION",
+        payload: id,
+      });
+    } catch (error) {
+      dispatch({
+        type: "TRANSACTION_ERROR",
+        payload: error.response.data.error,
+      });
+    }
   }
 
-  function addTransaction(transaction) {
-    dispatch({
-      type: "ADD_TRANSACTION",
-      payload: transaction,
-    });
+  async function addTransaction(transaction) {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    try {
+      const res = await axios.post("/api/v1/transactions", transaction, config);
+
+      dispatch({
+        type: "ADD_TRANSACTION",
+        payload: res.data.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "TRANSACTION_ERROR",
+        payload: error.response.data.error,
+      });
+    }
   }
 
   return (
